@@ -103,7 +103,7 @@ class King
   end
 
   def all_moves(current_position)
-    horizontals(current_position, 1)
+    horizontals(current_position, 1) + diagonals(current_position, 1)
   end
 end
 
