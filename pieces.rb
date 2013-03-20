@@ -1,3 +1,7 @@
+# encoding: utf-8
+
+#  http://en.wikipedia.org/wiki/Chess_symbols_in_Unicode
+
 module Movable
    HORIZONTAL = [
     [-1,  0],
@@ -33,9 +37,9 @@ module Movable
     horizontals
   end
 
-  def valid_steps(vector1, vector2, multiplier)
-    x = (vector1[0] * multiplier ) + vector2[0]
-    y = (vector1[1] * multiplier ) + vector2[1]
+  def valid_steps(vector1, position, multiplier)
+    x = (vector1[0] * multiplier ) + position[0]
+    y = (vector1[1] * multiplier ) + position[1]
     if x < 0 || y < 0 # I need a better way to deal with these nils
       nil
     elsif x > 7 || y > 7
@@ -47,25 +51,31 @@ module Movable
 end
 
 
-class Pawn 
-  include Movable 
-  attr_reader :direction, :name
+class Pawn
+  include Movable
+  attr_accessor :moved
+  attr_reader :direction, :name, :color
   def initialize(color)
     @color = color
-    @name = "p"
+    @name = '♙'
+    @moved = false
     set_direction
   end
 
-  def all_moves(current_position, steps=1)
-    horizontals(current_position, steps)[direction] 
+  def all_moves(current_position, steps=2)
+    if moved
+      [ horizontals(current_position, steps)[direction][0] ]
+    else
+      [ horizontals(current_position, steps)[direction][0..1] ]
+    end
   end
 
-  # two edge cases 
-  # - pawn can go two moves at first 
-  # - pawn can move diagonally to take another piece 
+  # two edge cases
+  # - pawn can go two moves at first
+  # - pawn can move diagonally to take another piece
 
   def take(current_position)
-    if direction == 1 
+    if direction == 1
       diagonals(current_position, 1)[0..1]
     elsif direction == 2
       diagonals(current_position, 1)[1...-1]
@@ -74,19 +84,19 @@ class Pawn
 
   def set_direction
     if @color == :w
-      @direction = 1 
+      @direction = 0
     elsif @color == :b
-      @direction = 2
+      @direction = -1
     end
   end
 end
 
-class Rook 
-  include Movable 
-  attr_reader :name
+class Rook
+  include Movable
+  attr_reader :name, :color
   def initialize(color)
     @color = color
-    @name = 'R'
+    @name = '♖'
   end
 
   def all_moves(current_position)
@@ -94,12 +104,12 @@ class Rook
   end
 end
 
-class King 
-  include Movable 
-  attr_reader :name
+class King
+  include Movable
+  attr_reader :name, :color
   def initialize(color)
     @color = color
-    @name = 'K'
+    @name = '♔'
   end
 
   def all_moves(current_position)
@@ -108,11 +118,11 @@ class King
 end
 
 class Queen
-  include Movable 
-  attr_reader :name
+  include Movable
+  attr_reader :name, :color
   def initialize(color)
     @color = color
-    @name = 'Q'
+    @name = '♕'
   end
 
   def all_moves(current_position)
@@ -120,12 +130,12 @@ class Queen
   end
 end
 
-class Bishop 
+class Bishop
   include Movable
-  attr_reader :name
+  attr_reader :name, :color
   def initialize(color)
     @color = color
-    @name = 'B'
+    @name = '♗'
   end
 
   def all_moves(current_position)
@@ -133,16 +143,16 @@ class Bishop
   end
 end
 
-class Knight 
+class Knight
   include Movable
-  attr_reader :name
+  attr_reader :name, :color
   def initialize(color)
-    @vectors = [ 
+    @vectors = [
       [2,1], [2,-1], [-2,-1], [-2,1],
       [1,2], [1,-2], [-1,2], [-1,-2]
     ]
     @color = color
-    @name = 'K'
+    @name = '♘'
   end
 
   def all_moves(current_position)
@@ -150,7 +160,7 @@ class Knight
     @vectors.each do |vector|
       moves << valid_steps(vector, current_position, 1)
     end
-    moves.compact
+    Array.new(1) { moves.compact }
   end
 end
 

@@ -7,11 +7,12 @@ class Game
     @player2 = player2
     @board = Board.new
   end
-  
+
   def play
     # loop throught the board
     # display
     # prompt user
+    # check color and if a piece exists
     # look to see if the king is in check or chechmate
 
     until @board.check_mate?
@@ -19,5 +20,5 @@ class Game
 
     end
   end
-  
+
 end
