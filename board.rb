@@ -44,4 +44,58 @@ class Board
     end
   end
 
+  def get_square(coords)
+    @board[coords[0]][coords[1]]
+  end
+
+  def set_square(coords, value)
+    @board[coords[0]][coords[1]] = value
+  end
+
+  def make_move(start, finish, current_color)
+    if valid_move?(start, finish, current_color)
+      piece = get_square(start)
+      set_square(finish, pieces)
+      set_square(start, nil)
+    else
+      nil # is nil a good return? 
+    end
+  end
+
+  def valid_move?(start, finish, current_color)
+    start_square = get_square(start)
+    finish_square = get_square(finish)
+    if start_square.nil?
+      false
+    elsif color_conflict(start_square, finish_square)
+      false # cannot move ontop of your own piece 
+    elsif start_square.all_moves(start)
+      
+    end 
+    # is it in the range of possible moves
+    # is there something blocking it
+  end
+
+  def color_conflic?(square1, square2)
+    if square1.respond_to(:color) && square2.respond_to(:color) 
+      start_square.color != finish_square.color ? false : true
+    else
+      false
+    end
+  end
+
+
+  def check?
+    
+  end
+
+  def check_mate?
+    
+  end
+
+
 end
+
+
+
+
