@@ -62,28 +62,23 @@ class Board
     end
   end
 
-  def valid_move?(start, finish, current_color)
+  def valid_move?(start, finish)
+    # assume the correc color and an actual pices exists in the start position 
     start_square = get_square(start)
     finish_square = get_square(finish)
-    if start_square.nil?
-      false
-    elsif color_conflict(start_square, finish_square)
-      false # cannot move ontop of your own piece 
-    elsif start_square.all_moves(start)
+    possible_moves = start_square.all_moves(start)
+    if 
+    elsif 
+    elsif 
       
     end 
     # is it in the range of possible moves
     # is there something blocking it
   end
 
-  def color_conflic?(square1, square2)
-    if square1.respond_to(:color) && square2.respond_to(:color) 
-      start_square.color != finish_square.color ? false : true
-    else
-      false
-    end
+  def blocked?
+    
   end
-
 
   def check?
     
