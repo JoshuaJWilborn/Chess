@@ -49,19 +49,20 @@ end
 
 class Pawn 
   include Movable 
-  attr_reader :direction
+  attr_reader :direction, :name
   def initialize(color)
     @color = color
+    @name = "p"
     set_direction
+  end
+
+  def all_moves(current_position, steps=1)
+    horizontals(current_position, steps)[direction] 
   end
 
   # two edge cases 
   # - pawn can go two moves at first 
   # - pawn can move diagonally to take another piece 
-
-  def all_moves(current_position, steps=1)
-    horizontals(current_position, steps)[direction] 
-  end
 
   def take(current_position)
     if direction == 1 
@@ -82,8 +83,10 @@ end
 
 class Rook 
   include Movable 
+  attr_reader :name
   def initialize(color)
     @color = color
+    @name = 'R'
   end
 
   def all_moves(current_position)
@@ -93,8 +96,10 @@ end
 
 class King 
   include Movable 
+  attr_reader :name
   def initialize(color)
     @color = color
+    @name = 'K'
   end
 
   def all_moves(current_position)
@@ -104,9 +109,10 @@ end
 
 class Queen
   include Movable 
+  attr_reader :name
   def initialize(color)
     @color = color
-    @max_distance = 7
+    @name = 'Q'
   end
 
   def all_moves(current_position)
@@ -116,9 +122,10 @@ end
 
 class Bishop 
   include Movable
+  attr_reader :name
   def initialize(color)
     @color = color
-    @max_distance = 7
+    @name = 'B'
   end
 
   def all_moves(current_position)
@@ -128,13 +135,14 @@ end
 
 class Knight 
   include Movable
+  attr_reader :name
   def initialize(color)
     @vectors = [ 
       [2,1], [2,-1], [-2,-1], [-2,1],
       [1,2], [1,-2], [-1,2], [-1,-2]
     ]
     @color = color
-    @max_distance = 1
+    @name = 'K'
   end
 
   def all_moves(current_position)
