@@ -1,5 +1,6 @@
 require_relative 'pieces.rb'
-require 'debugger'
+require 'colorize'
+
 class Board
   attr_accessor :board
   def initialize
@@ -33,18 +34,24 @@ class Board
   end
 
   def display_board
-    print "  a  b  c  d  e  f  g  h\n\n"
+    print "  a  b  c  d  e  f  g  h\n"
+    alt_colors = [:white, :blue]
+    color_map = { :w => :red, :b => :black}
+    alt_index = 1
     (0..7).each do |row|
       print (8 - row)
       (0..7).each do |col|
         if @board[row][col].respond_to?(:name)
-          print " #{@board[row][col].name} "
+          print " #{@board[row][col].name} ".colorize(:background => alt_colors[alt_index], :color => color_map[@board[row][col].color])
+
         else
-          print " _ "
+          print "   ".colorize(:background => alt_colors[alt_index])
         end
+        alt_index = alt_index == 1 ? 0 : 1
       end
       print (8 - row)
-      print "\n\n"
+      print "\n"
+      alt_index = alt_index == 1 ? 0 : 1
     end
     print "  a  b  c  d  e  f  g  h\n\n"
   end
@@ -57,14 +64,23 @@ class Board
     @board[coords[0]][coords[1]] = value
   end
 
-  def make_move(start, finish) # need a color check
-    if valid_move?(start, finish)
+  def make_move(start, finish)
+    if valid_move?(start, finish) && correct_color?(start, finish)
       piece = get_square(start)
       set_square(finish, piece)
       set_square(start, nil)
     else
-      nil # is nil a good return?
+      false # is nil a good return?
     end
+  end
+
+  def correct_color?(start, finish)
+    unless get_square(start).nil? || get_square(finish).nil?
+      get_square(start).color != get_square(finish).color
+    else
+      return true unless get_square(start).nil?
+    end
+    false
   end
 
   def valid_move?(start, finish)
@@ -110,7 +126,6 @@ class Board
         end
       end
     end
-    p "King not found, error error will robinson"
   end
 
   def check?(color)
@@ -144,6 +159,21 @@ class Board
   end
 
   def check_mate?(color)
+    # get all pieces of color do
+      # grab possible moves
+      # fake out move
+      # see if still in check
+    # end
+
+    # pieces_with_positions_for(color).each do |piece, pos|
+      # piece.possible_moves.each do |move|
+        # shadow_board = self.dup
+        # shadow_board.try_move(move)
+        # return false unless shadow_board.check?(color)
+      # end
+    # end
+    # true
+
     @board.each_with_index do |row, row_num|
       row.each_with_index do |square, col_num|
         next if square.nil?
@@ -155,7 +185,7 @@ class Board
           future_directions.each do |future_move|
 
             dupped_board = self.dup
-            next if dupped_board.valid_move?([row_num, col_num], future_move) == false
+            next unless dupped_board.valid_move?([row_num, col_num], future_move)
             dupped_board.make_move([row_num, col_num], future_move)
             return false unless dupped_board.check?(color)
           end
